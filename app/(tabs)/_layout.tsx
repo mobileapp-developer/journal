@@ -1,10 +1,7 @@
 import Feather from '@expo/vector-icons/Feather';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/MaterialIcons';
 import { Tabs } from "expo-router";
 import { TouchableOpacity, useColorScheme } from 'react-native';
-import { useTheme } from '../../components/ThemeContext';
-import { use } from 'react';
 
 
 function TabBarButton(props: any) {
