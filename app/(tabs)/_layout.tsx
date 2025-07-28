@@ -1,45 +1,73 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome5 from '@expo/vector-icons/MaterialIcons';
+import { Tabs } from "expo-router";
+import { TouchableOpacity, useColorScheme } from 'react-native';
+import { useTheme } from '../../components/ThemeContext';
+import { use } from 'react';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
+function TabBarButton(props: any) {
+  return (
+    <TouchableOpacity
+      {...props}
+      onPress={async () => {
+        props.onPress?.();
+      }}
+    />
+  );
+}
+
+export default function TabsLayout() {
   const colorScheme = useColorScheme();
+
+  const tabBarColor = colorScheme === 'light' ? '#FAFAFA' : '#111111';
+  const tabBarBorder = colorScheme === 'light' ? '#e0e0e0' : '#222';
+  const activeColor = colorScheme === 'light' ? '#166cffff' : '#FAFAFA';
+  const inactiveColor = colorScheme === 'light' ? '#929292' : '#bdbdbd';
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: inactiveColor,
+        tabBarStyle: {
+          backgroundColor: tabBarColor,
+          borderTopColor: tabBarBorder,
+        },
+        tabBarButton: TabBarButton,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Головна',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Feather name="home" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="history"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Записи',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="history" size={30} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Налаштування',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Feather name="settings" size={24} color={color} />
+          ),
         }}
       />
     </Tabs>
-  );
+  )
 }

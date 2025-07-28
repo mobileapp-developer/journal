@@ -1,29 +1,37 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import React, { useState, useEffect } from 'react';
+import { Stack } from "expo-router";
+import { ThemeProvider } from "../components/ThemeContext";
+import WelcomeScreen from '../components/WelcomeScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [showWelcome, setShowWelcome] = useState(true); // або null, якщо хочеш уникнути миготіння
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  // Закоментовано, як і в тебе:
+  // useEffect(() => {
+  //   (async () => {
+  //     const seen = await AsyncStorage.getItem('welcome_seen');
+  //     setShowWelcome(seen !== 'true');
+  //   })();
+  // }, []);
+
+  const handleContinue = () => {
+    // await AsyncStorage.setItem('welcome_seen', 'true');
+    setShowWelcome(false);
+  };
+
+  // if (showWelcome === null) return null;
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+    <ThemeProvider>
+      {showWelcome ? (
+        <WelcomeScreen onContinue={handleContinue} />
+      ) : (
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      )}
     </ThemeProvider>
   );
 }

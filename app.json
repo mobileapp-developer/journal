@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "habit",
-    "slug": "habit",
+    "name": "journal",
+    "slug": "journal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
