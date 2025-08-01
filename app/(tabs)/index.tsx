@@ -5,12 +5,15 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+
 import DatePicker from '../(modals)/DatePicker';
 import FeelingsSection from '@/components/FeelingsSection';
 import GratitudeSection from '@/components/GratitudeSection';
 import SelfCareSection from '@/components/SelfCareSection';
 import SelfLoveSection from '@/components/SelfLoveSection';
 import WaterIntakeSection from '@/components/WaterIntakeSection';
+import { Color } from '@/constants/TWPalette';
 
 const FEELINGS_OPTIONS = [
     '😊 Щастя', '😌 Спокій', '😆 Радість', '😤 Роздратованість', '😰 Тривожність', '😴 Втома', '😢 Сум',
@@ -35,12 +38,18 @@ interface JournalScreenProps {
     onOpenSettings?: () => void;
 }
 
+const colorThemes = {
+    blue: { name: 'blue', primary: 500, accent: 600 },
+    cyan: { name: 'cyan', primary: 500, accent: 600 },
+} as const;
+
 export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [journalEntry, setJournalEntry] = useState<JournalEntry>({
         date: '', feelings: [], selfLove: '', selfCare: [], gratitude: ['', '', ''], waterIntake: 0,
     });
+    const [colorTheme, setColorTheme] = useState<keyof typeof colorThemes>('blue');
 
     const formatDate = (date: Date) => {
         const year = date.getFullYear();
@@ -110,77 +119,78 @@ export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
             waterIntake: Math.max(0, Math.min(8, glasses))
         }));
     };
-
+    
     const colorScheme = useColorScheme();
     const themeTitleStyle = colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
-    const themeSafeAreaViewStyle = colorScheme === 'light' ? styles.lightSafeAreaView : styles.darkSafeAreaView;
-    const themeContainerStyle = colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
     const themeCalendarButtonStyle = colorScheme === 'light' ? styles.lightCalendarButton : styles.darkCalendarButton;
+    const themeBackgroundGradient = colorScheme === 'light' ?
+        [
+            Color[colorThemes[colorTheme].name][300],
+            '#ffffff',
+            Color[colorThemes[colorTheme].name][300],
+        ] : [
+            Color[colorThemes[colorTheme].name][900],
+            '#7babffff',
+            Color[colorThemes[colorTheme].name][900],
+        ];
 
     return (
-        <SafeAreaView style={[styles.safeAreaView, themeSafeAreaViewStyle]} edges={['top']}>
-            <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-                <View style={[styles.container, themeContainerStyle]}>
-                    <View style={styles.headerRow}>
-                        <Text style={[styles.title, themeTitleStyle]}>Щоденник</Text>
-                    </View>
-                    <TouchableOpacity style={[styles.calenderButton, themeCalendarButtonStyle]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        setShowDatePicker(true);
-                    }}
-                    >
-                        <Text style={[styles.text]}>
-                            {formatDisplayDate(selectedDate)}
-                        </Text>
-                        <Ionicons name="calendar" size={20} color='#0077ffff' />
-                    </TouchableOpacity>
-                </View>
-                {showDatePicker && (
-                    <DatePicker
-                        visible={showDatePicker}
-                        value={selectedDate}
-                        onChange={(event: any, date?: Date) => {
-                            /* Для Android Picker закривається автоматично після взаємодії
-                               Для iOS користувач закриває модальне вікно кнопкою */
-                            if (Platform.OS === 'android') {
-                                setShowDatePicker(false);
-                            }
-                            if (date) setSelectedDate(date);
+        <LinearGradient
+            style={{ flex: 1 }}
+            //@ts-ignore
+            colors={themeBackgroundGradient}
+        >
+            <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+                <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
+                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                    <View style={styles.container}>
+                        <View style={styles.headerRow}>
+                            <Text style={[styles.title, themeTitleStyle]}>Щоденник</Text>
+                        </View>
+                        <TouchableOpacity style={[styles.calenderButton, themeCalendarButtonStyle]} onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setShowDatePicker(true);
                         }}
-                        onClose={() => setShowDatePicker(false)}
-                    />
-                )}
-                <FeelingsSection feelings={journalEntry.feelings} toggleFeeling={toggleFeeling} FEELINGS_OPTIONS={FEELINGS_OPTIONS} />
-                <SelfLoveSection selfLove={journalEntry.selfLove} setSelfLove={text => setJournalEntry(prev => ({ ...prev, selfLove: text }))} />
-                <SelfCareSection selfCare={journalEntry.selfCare} toggleSelfCare={toggleSelfCare} SELF_CARE_OPTIONS={SELF_CARE_OPTIONS} />
-                <GratitudeSection gratitude={journalEntry.gratitude} updateGratitude={updateGratitude} />
-                <WaterIntakeSection waterIntake={journalEntry.waterIntake} updateWaterIntake={updateWaterIntake} />
-                <TouchableOpacity style={styles.saveButton} onPress={() => {
-                    router.push('/history');
-                    saveJournalEntry();
-                }}>
-                    <Text style={styles.safeButtonText}>Зберегти запис</Text>
-                </TouchableOpacity>
-                <View style={{ height: 20 }} />
-            </ScrollView>
-        </SafeAreaView>
+                        >
+                            <Text style={[styles.text]}>
+                                {formatDisplayDate(selectedDate)}
+                            </Text>
+                            <Ionicons name="calendar" size={20} color='#0077ffff' />
+                        </TouchableOpacity>
+                    </View>
+                    {showDatePicker && (
+                        <DatePicker
+                            visible={showDatePicker}
+                            value={selectedDate}
+                            onChange={(event: any, date?: Date) => {
+                                if (Platform.OS === 'android') setShowDatePicker(false);
+                                if (date) setSelectedDate(date);
+                            }}
+                            onClose={() => setShowDatePicker(false)}
+                        />
+                    )}
+                    <FeelingsSection feelings={journalEntry.feelings} toggleFeeling={toggleFeeling} FEELINGS_OPTIONS={FEELINGS_OPTIONS} />
+                    <SelfLoveSection selfLove={journalEntry.selfLove} setSelfLove={text => setJournalEntry(prev => ({ ...prev, selfLove: text }))} />
+                    <SelfCareSection selfCare={journalEntry.selfCare} toggleSelfCare={toggleSelfCare} SELF_CARE_OPTIONS={SELF_CARE_OPTIONS} />
+                    <GratitudeSection gratitude={journalEntry.gratitude} updateGratitude={updateGratitude} />
+                    <WaterIntakeSection waterIntake={journalEntry.waterIntake} updateWaterIntake={updateWaterIntake} />
+                    <TouchableOpacity style={styles.saveButton} onPress={() => {
+                        router.push('/history');
+                        saveJournalEntry();
+                    }}>
+                        <Text style={styles.safeButtonText}>Зберегти запис</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: 20 }} />
+                </ScrollView>
+            </SafeAreaView>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        borderBottomWidth: 1,
         borderBottomColor: '#FAFAFA'
-    },
-    lightContainer: {
-        backgroundColor: 'white',
-        borderBlockColor: '#FAFAFA',
-    },
-    darkContainer: {
-        backgroundColor: '#000',
-        borderBlockColor: '#222',
     },
     headerRow: {
         flexDirection: 'row',
@@ -198,15 +208,6 @@ const styles = StyleSheet.create({
     },
     darkTitleText: {
         color: '#FAFAFA',
-    },
-    safeAreaView: {
-        flex: 1,
-    },
-    lightSafeAreaView: {
-        backgroundColor: '#FAFAFA',
-    },
-    darkSafeAreaView: {
-        backgroundColor: '#000',
     },
     calenderButton: {
         flexDirection: 'row',
@@ -251,4 +252,4 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold'
     },
-})
+});

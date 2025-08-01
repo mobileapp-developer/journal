@@ -143,7 +143,7 @@ export default function HomeScreen() {
         />
 
         <View style={{ paddingHorizontal: 16 }}>
-          <Text style={[styles.subtitle, { marginBottom: 16 }]}>
+          <Text style={[styles.subtitle, { marginBottom: 16, marginTop: 16 }]}>
             Choose Theme
           </Text>
 

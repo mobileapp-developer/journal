@@ -70,6 +70,7 @@ const HistoryScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         </View>
         <FlatList
           data={entries}
+          showsVerticalScrollIndicator={false}
           keyExtractor={item => item.date}
           renderItem={({ item }) => (
             <View style={[styles.entryCard, themeCardtyle]}> 
