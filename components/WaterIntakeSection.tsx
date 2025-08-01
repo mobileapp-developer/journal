@@ -3,13 +3,13 @@
 скільки склянок води випито. Відображає статистику споживання води за тиждень у вигляді графіка.
 */
 
-import { View, Text, TouchableOpacity, StyleSheet, LayoutAnimation, Platform, UIManager, useColorScheme } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, LayoutAnimation, Platform, UIManager, useColorScheme, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
-import { BarChart } from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { router } from 'expo-router';
 
 interface WaterIntakeSectionProps {
     waterIntake: number;
@@ -82,20 +82,25 @@ export default function WaterIntakeSection({ waterIntake, updateWaterIntake }: W
 
     const colorScheme = useColorScheme();
 
-    const cardColor = colorScheme === 'dark' ? '#222' : 'white';
-    const textColor = colorScheme === 'dark' ? '#aeaeae' : '#333';
-    const subTextColor = colorScheme === 'dark' ? '#aaa' : '#666';
-
     const themeSectionStyle = colorScheme === 'light' ? styles.lightSection : styles.darkSection;
     const themeGoalValueStyle = colorScheme === 'light' ? styles.lightGoalValue : styles.darkGoalValue;
     const themeWaterSubtextStyle = colorScheme === 'light' ? styles.lightWaterSubtext : styles.darkWaterSubtext;
-    const themeMoreButtonStyle = colorScheme === 'light' ? styles.lightMoreButton : styles.darkMoreButton;
-    const themeMoreButtonTextStyle = colorScheme === 'light' ? styles.lightMoreButtonText : styles.darkMoreButtonText;
-    const themeStatsContainerStyle = colorScheme === 'light' ? styles.lightStatsContainer : styles.darkStatsContainer;
 
     return (
         <View style={[styles.section, themeSectionStyle]}>
-            <Text style={styles.sectionHeader}>Вода</Text>
+            <View style={styles.sectionHeader}>
+                <Text style={styles.sectionHeaderText}>Вода</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        router.push('/chart');
+                        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    }}
+                >
+                    <Text style={colorScheme === 'light' ? styles.lightMoreButtonText : styles.darkMoreButtonText}>
+                        Більше
+                    </Text> 
+                </TouchableOpacity>
+            </View>
             <View style={styles.goalRow}>
                 <Text style={styles.goalLabel}>Норма: </Text>
                 <TouchableOpacity onPress={() => handleGoalChange(-1)} style={styles.goalBtn}>
@@ -128,51 +133,6 @@ export default function WaterIntakeSection({ waterIntake, updateWaterIntake }: W
             <Text style={styles.waterCount}>
                 {waterIntake}/{waterGoal} склянок
             </Text>
-            <TouchableOpacity
-                style={[styles.moreBtn, themeMoreButtonStyle]}
-                onPress={() => {
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    setExpanded((prev) => !prev);
-                }}
-                activeOpacity={0.7}
-            >
-                <Text style={themeMoreButtonTextStyle}>{expanded ? 'Сховати' : 'Більше'}</Text>
-            </TouchableOpacity>
-            {expanded && (
-                <View style={[styles.statsContainer, themeStatsContainerStyle]}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: textColor, marginBottom: 8 }}>
-                        За тиждень
-                    </Text>
-                    <Text style={{ color: '#0077ffff', fontSize: 16, marginBottom: 4 }}>Середнє: {average.toFixed(1)} скл.</Text>
-                    <View style={{ width: '100%', alignItems: 'center' }}>
-                        <BarChart
-                            data={{
-                                labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'],
-                                datasets: [{ data: weeklyData }]
-                            }}
-                            width={screenWidth - 96}
-                            height={180}
-                            fromZero
-                            yAxisInterval={1}
-                            yAxisLabel=""
-                            yAxisSuffix=" скл."
-                            chartConfig={{
-                                backgroundColor: cardColor,
-                                backgroundGradientFrom: cardColor,
-                                backgroundGradientTo: cardColor,
-                                decimalPlaces: 0,
-                                color: (opacity = 1) => `rgba(74, 144, 226, ${opacity})`,
-                                labelColor: () => textColor,
-                                barPercentage: 0.6,
-                            }}
-                            style={{ borderRadius: 12, marginVertical: 8 }}
-                        />
-                    </View>
-                    <Text style={{ textAlign: 'center', color: subTextColor, fontSize: 13, marginTop: 4 }}>
-                        Ціль — {waterGoal} склянок на день
-                    </Text>
-                </View>
-            )}
         </View>
     );
 }
@@ -196,11 +156,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#222'
     },
     sectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 16,
         paddingBottom: 8,
         borderBottomWidth: 2,
+        color: '#0077ffff',
+        borderBottomColor: '#0077ffff',
+    },
+    sectionHeaderText: {
+        fontSize: 18,
+        fontWeight: 'bold',
         color: '#0077ffff',
         borderBottomColor: '#0077ffff',
     },
@@ -224,12 +193,12 @@ const styles = StyleSheet.create({
     },
     lightMoreButtonText: {
         color: '#0077ffff',
-        fontWeight: 'bold',
+        fontWeight: 'semibold',
         fontSize: 15,
     },
     darkMoreButtonText: {
         color: '#eaf2ff',
-        fontWeight: 'bold',
+        fontWeight: 'semibold',
         fontSize: 15,
     },
     statsContainer: {

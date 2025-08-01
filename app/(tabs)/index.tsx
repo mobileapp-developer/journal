@@ -141,7 +141,7 @@ export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
                         visible={showDatePicker}
                         value={selectedDate}
                         onChange={(event: any, date?: Date) => {
-                            /* Для Android пікер закривається автоматично після взаємодії
+                            /* Для Android Picker закривається автоматично після взаємодії
                                Для iOS користувач закриває модальне вікно кнопкою */
                             if (Platform.OS === 'android') {
                                 setShowDatePicker(false);

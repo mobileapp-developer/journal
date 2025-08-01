@@ -38,7 +38,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Головна',
+          title: 'Щоденник',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Feather name="home" size={24} color={color} />
