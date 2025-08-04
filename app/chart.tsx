@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Color } from '@/constants/TWPalette';
 import { getMonthlyWaterIntake } from '@/constants/waterStorage';
 import { WATERTEXT } from '@/constants/Texts';
+import { colorThemes, useTheme } from '@/lib/theme-context';
 
 interface BarData {
   value: number;
@@ -14,26 +15,29 @@ interface BarData {
   [key: string]: any;
 }
 
-const colorThemes = {
-  blue: { name: 'blue', primary: 500, accent: 600 },
-  cyan: { name: 'cyan', primary: 500, accent: 600 },
-} as const;
-
 export default function HomeScreen() {
+
+  const colorScheme = useColorScheme();
 
   const [selectedBarIndex, setSelectedBarIndex] = useState<number | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [colorTheme, setColorTheme] = useState<keyof typeof colorThemes>('blue');
+
+  const { colorTheme } = useTheme(); //* Get the current color theme from the context
+
+  const themeBackgroundGradient = colorScheme === 'light' ?
+          [
+              Color[colorThemes[colorTheme].name][200],
+              '#ffffff',
+              Color[colorThemes[colorTheme].name][200],
+          ] : [
+              Color[colorThemes[colorTheme].name][900],
+              '#dbdbdbff',
+              Color[colorThemes[colorTheme].name][900],
+          ];
 
   const theme = colorThemes[colorTheme];
   const themeColor = Color[theme.name];
-
-  const bgColors = [
-    Color[colorThemes[colorTheme].name][100],
-    '#ffffff',
-    Color[colorThemes[colorTheme].name][100],
-  ] as const;
 
   const [monthlyWaterData, setMonthlyWaterData] = useState<number[]>([]);
 
@@ -93,11 +97,11 @@ export default function HomeScreen() {
     return 'склянок';
   }
 
-
   return (
     <LinearGradient
       style={{ flex: 1 }}
-      colors={bgColors}
+      //@ts-ignore
+      colors={themeBackgroundGradient}
     >
       <ScrollView contentInsetAdjustmentBehavior='automatic' showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
@@ -160,30 +164,6 @@ export default function HomeScreen() {
 
             </Text>
           </View>
-          <Text style={[styles.subtitle, { marginBottom: 16, marginTop: 16 }]}>
-            Choose Theme
-          </Text>
-
-          <View style={{ flexDirection: 'row', gap: 16 }}>
-            {Object.keys(colorThemes).map((theme) => (
-              <Pressable
-                key={theme}
-                onPress={() => setColorTheme(theme as keyof typeof colorThemes)}
-                style={{
-                  backgroundColor:
-                    //@ts-ignore
-                    Color[colorThemes[theme].name as keyof typeof Color][500],
-                  width: 30,
-                  height: 30,
-                  borderRadius: 16,
-                  borderWidth: colorTheme === theme ? 3 : 0,
-                  borderColor: 'white',
-                  boxShadow: colorTheme === theme ? '0px 2px 8px rgba(0,0,0,0.2)' : 'none',
-                }}
-              />
-            ))}
-          </View>
-
           <Text style={styles.waterTitleText}>
             Про "Вода"
           </Text>
