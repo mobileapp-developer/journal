@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { Stack } from "expo-router";
-import { ThemeProvider } from "../components/ThemeContext";
+import { ThemeProvider } from "../lib/theme-context";
 import WelcomeScreen from '../components/WelcomeScreen';
 
 export default function RootLayout() {

@@ -4,7 +4,7 @@
     "slug": "journal",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/journal-app.png",
+    "icon": "./assets/images/app-icon1.png",
     "scheme": "habit",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

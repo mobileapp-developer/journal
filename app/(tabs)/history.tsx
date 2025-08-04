@@ -14,8 +14,7 @@ interface JournalEntry {
   gratitude: [string, string, string];
   waterIntake: number;
 }
-
-const HistoryScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+export default function HistoryScreen() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
 
   useFocusEffect(
@@ -199,5 +198,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default HistoryScreen;

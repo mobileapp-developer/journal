@@ -23,8 +23,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onContinue }) => {
   const textColor = colorScheme === 'dark' ? '#FAFAFA' : '#333';
 
   return (
-    <Animated.View style={[styles.container, { backgroundColor, transform: [{ translateX: slideAnim }] }] }>
-      {/* Статусбар для видимості при темній/світлій темі */}
+    <Animated.View style={styles.container}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={backgroundColor} />
       <View style={styles.content}>
         <Text style={styles.title}>Moody</Text>

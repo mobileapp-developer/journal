@@ -14,6 +14,7 @@ import SelfCareSection from '@/components/SelfCareSection';
 import SelfLoveSection from '@/components/SelfLoveSection';
 import WaterIntakeSection from '@/components/WaterIntakeSection';
 import { Color } from '@/constants/TWPalette';
+import { colorThemes, useTheme } from '@/lib/theme-context';
 
 const FEELINGS_OPTIONS = [
     '😊 Щастя', '😌 Спокій', '😆 Радість', '😤 Роздратованість', '😰 Тривожність', '😴 Втома', '😢 Сум',
@@ -34,22 +35,14 @@ export interface JournalEntry {
     waterIntake: number;
 }
 
-interface JournalScreenProps {
-    onOpenSettings?: () => void;
-}
-
-const colorThemes = {
-    blue: { name: 'blue', primary: 500, accent: 600 },
-    cyan: { name: 'cyan', primary: 500, accent: 600 },
-} as const;
-
-export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
+export default function JournalScreen() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [journalEntry, setJournalEntry] = useState<JournalEntry>({
         date: '', feelings: [], selfLove: '', selfCare: [], gratitude: ['', '', ''], waterIntake: 0,
     });
-    const [colorTheme, setColorTheme] = useState<keyof typeof colorThemes>('blue');
+
+    const { colorTheme } = useTheme();
 
     const formatDate = (date: Date) => {
         const year = date.getFullYear();
@@ -62,7 +55,9 @@ export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     });
 
-    useEffect(() => { loadJournalEntry(selectedDate); }, [selectedDate]);
+    useEffect(() => {
+        loadJournalEntry(selectedDate);
+    }, [selectedDate]);
 
     const loadJournalEntry = async (date: Date) => {
         try {
@@ -119,7 +114,7 @@ export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
             waterIntake: Math.max(0, Math.min(8, glasses))
         }));
     };
-    
+
     const colorScheme = useColorScheme();
     const themeTitleStyle = colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
     const themeCalendarButtonStyle = colorScheme === 'light' ? styles.lightCalendarButton : styles.darkCalendarButton;
@@ -130,7 +125,7 @@ export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
             Color[colorThemes[colorTheme].name][300],
         ] : [
             Color[colorThemes[colorTheme].name][900],
-            '#7babffff',
+            '#dbdbdbff',
             Color[colorThemes[colorTheme].name][900],
         ];
 
@@ -174,10 +169,12 @@ export default function JournalScreen({ onOpenSettings }: JournalScreenProps) {
                     <SelfCareSection selfCare={journalEntry.selfCare} toggleSelfCare={toggleSelfCare} SELF_CARE_OPTIONS={SELF_CARE_OPTIONS} />
                     <GratitudeSection gratitude={journalEntry.gratitude} updateGratitude={updateGratitude} />
                     <WaterIntakeSection waterIntake={journalEntry.waterIntake} updateWaterIntake={updateWaterIntake} />
-                    <TouchableOpacity style={styles.saveButton} onPress={() => {
-                        router.push('/history');
-                        saveJournalEntry();
-                    }}>
+                    <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={() => {
+                            router.push('/history');
+                            saveJournalEntry();
+                        }}>
                         <Text style={styles.safeButtonText}>Зберегти запис</Text>
                     </TouchableOpacity>
                     <View style={{ height: 20 }} />

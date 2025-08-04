@@ -3,7 +3,6 @@ import FontAwesome5 from '@expo/vector-icons/MaterialIcons';
 import { Tabs } from "expo-router";
 import { TouchableOpacity, useColorScheme } from 'react-native';
 
-
 function TabBarButton(props: any) {
   return (
     <TouchableOpacity

@@ -5,6 +5,7 @@ import { BarChart } from 'react-native-gifted-charts';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Color } from '@/constants/TWPalette';
 import { getMonthlyWaterIntake } from '@/constants/waterStorage';
+import { WATERTEXT } from '@/constants/Texts';
 
 interface BarData {
   value: number;
@@ -24,8 +25,6 @@ export default function HomeScreen() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [colorTheme, setColorTheme] = useState<keyof typeof colorThemes>('blue');
-
-  const colorScheme = useColorScheme();
 
   const theme = colorThemes[colorTheme];
   const themeColor = Color[theme.name];
@@ -85,12 +84,22 @@ export default function HomeScreen() {
     }));
   }
 
+  const getGlassWordForm = (count: number): string => {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+
+    if (mod10 === 1 && mod100 !== 11) return 'склянка';
+    if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return 'склянки';
+    return 'склянок';
+  }
+
+
   return (
     <LinearGradient
       style={{ flex: 1 }}
       colors={bgColors}
     >
-      <ScrollView contentInsetAdjustmentBehavior='automatic'>
+      <ScrollView contentInsetAdjustmentBehavior='automatic' showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Pressable
             onPress={() => navigateMonth(-1)}
@@ -143,6 +152,14 @@ export default function HomeScreen() {
         />
 
         <View style={{ paddingHorizontal: 16 }}>
+          <View style={styles.card}>
+            <Text style={styles.waterText}>
+              {selectedBarIndex !== null && monthlyWaterData[selectedBarIndex] !== undefined
+                ? `Ви випили ${monthlyWaterData[selectedBarIndex]} ${getGlassWordForm(monthlyWaterData[selectedBarIndex])} води ${selectedBarIndex + 1} ${getMonthName(currentMonth)}. ${currentYear}`
+                : 'Виберіть день, щоб побачити деталі'}
+
+            </Text>
+          </View>
           <Text style={[styles.subtitle, { marginBottom: 16, marginTop: 16 }]}>
             Choose Theme
           </Text>
@@ -166,6 +183,17 @@ export default function HomeScreen() {
               />
             ))}
           </View>
+
+          <Text style={styles.waterTitleText}>
+            Про "Вода"
+          </Text>
+
+          <View style={styles.card}>
+            <Text style={styles.waterText}>
+              {WATERTEXT}
+            </Text>
+          </View>
+
         </View>
       </ScrollView>
     </LinearGradient>
@@ -193,4 +221,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Color.gray[600],
   },
+  card: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 16,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  waterTitleText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#000000',
+    marginTop: 16,
+    marginBottom: -8,
+  },
+  waterText: {
+    fontSize: 16,
+    color: Color.gray[800],
+    fontWeight: '400',
+    lineHeight: 22,
+  }
 });
