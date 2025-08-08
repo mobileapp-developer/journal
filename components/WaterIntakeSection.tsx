@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     darkMoreButtonText: {
-        color: '#eaf2ff',
+        color: '#0077ffff',
         fontWeight: 'semibold',
         fontSize: 15,
     },

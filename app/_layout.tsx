@@ -31,7 +31,6 @@ export default function RootLayout() {
               headerLargeTitle: true,
               headerTitle: 'Вода',
               headerTransparent: true,
-              headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
               headerBackTitle: 'Назад'
             }}
           />

@@ -27,9 +27,9 @@ export default function HomeScreen() {
 
   const themeBackgroundGradient = colorScheme === 'light' ?
           [
-              Color[colorThemes[colorTheme].name][200],
+              Color[colorThemes[colorTheme].name][300],
               '#ffffff',
-              Color[colorThemes[colorTheme].name][200],
+              Color[colorThemes[colorTheme].name][300],
           ] : [
               Color[colorThemes[colorTheme].name][900],
               '#dbdbdbff',
@@ -97,6 +97,9 @@ export default function HomeScreen() {
     return 'склянок';
   }
 
+  const themeCardStyle = colorScheme === 'light' ? styles.lightCard : styles.darkCard;
+  const themeTextStyle = colorScheme === 'light' ? styles.lightText : styles.darkText;
+
   return (
     <LinearGradient
       style={{ flex: 1 }}
@@ -156,20 +159,20 @@ export default function HomeScreen() {
         />
 
         <View style={{ paddingHorizontal: 16 }}>
-          <View style={styles.card}>
-            <Text style={styles.waterText}>
+          <View style={[styles.card, themeCardStyle]}>
+            <Text style={[styles.waterText, themeTextStyle]}>
               {selectedBarIndex !== null && monthlyWaterData[selectedBarIndex] !== undefined
                 ? `Ви випили ${monthlyWaterData[selectedBarIndex]} ${getGlassWordForm(monthlyWaterData[selectedBarIndex])} води ${selectedBarIndex + 1} ${getMonthName(currentMonth)}. ${currentYear}`
                 : 'Виберіть день, щоб побачити деталі'}
 
             </Text>
           </View>
-          <Text style={styles.waterTitleText}>
+          <Text style={[styles.waterTitleText]}>
             Про "Вода"
           </Text>
 
-          <View style={styles.card}>
-            <Text style={styles.waterText}>
+          <View style={[styles.card, themeCardStyle]}>
+            <Text style={[styles.waterText, themeTextStyle]}>
               {WATERTEXT}
             </Text>
           </View>
@@ -202,7 +205,6 @@ const styles = StyleSheet.create({
     color: Color.gray[600],
   },
   card: {
-    backgroundColor: 'white',
     padding: 16,
     borderRadius: 8,
     marginTop: 16,
@@ -211,6 +213,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  lightCard: {
+    backgroundColor: 'white',
+  },
+  darkCard: {
+    backgroundColor: '#222',
   },
   waterTitleText: {
     fontSize: 22,
@@ -221,8 +229,13 @@ const styles = StyleSheet.create({
   },
   waterText: {
     fontSize: 16,
-    color: Color.gray[800],
     fontWeight: '400',
     lineHeight: 22,
-  }
+  },
+  lightText: {
+    color : '#333',
+  },
+  darkText: {
+    color: '#FAFAFA',
+  },
 });
