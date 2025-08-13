@@ -7,13 +7,7 @@ import { Color } from '@/constants/TWPalette';
 import { getMonthlyWaterIntake } from '@/constants/waterStorage';
 import { WATERTEXT } from '@/constants/Texts';
 import { colorThemes, useTheme } from '@/lib/theme-context';
-
-interface BarData {
-  value: number;
-  label?: string;
-  frontColor?: string;
-  [key: string]: any;
-}
+import { BarData } from '@/types';
 
 export default function HomeScreen() {
 

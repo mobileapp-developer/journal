@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import NotificationTimePicker from '../(modals)/NotificationTimePicker';
 import { Color } from '@/constants/TWPalette';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colorThemes, useTheme } from '@/lib/theme-context';
+import NotificationTimePicker from '../(modals)/NotificationTimePicker';
 
 export default function Settings() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -18,7 +18,6 @@ export default function Settings() {
   const themeNameStyle = colorScheme === 'light' ? styles.lightNameText : styles.darkNameText;
   const themeNotificationCardStyle = colorScheme === 'light' ? styles.lightNotificationCard : styles.darkNotificationCard;
   const themeNotificationTextStyle = colorScheme === 'light' ? styles.lightNotificationText : styles.darkNotificationText;
-
   const themeBackgroundGradient = colorScheme === 'light'
     ? [
       Color[colorThemes[colorTheme].name][300],

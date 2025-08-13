@@ -5,15 +5,8 @@ import * as Haptics from 'expo-haptics';
 import React, { useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { JournalEntry } from '@/types';
 
-interface JournalEntry {
-  date: string;
-  feelings: string[];
-  selfLove: string;
-  selfCare: string[];
-  gratitude: [string, string, string];
-  waterIntake: number;
-}
 export default function HistoryScreen() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
 
@@ -59,11 +52,11 @@ export default function HistoryScreen() {
   const themeContainerStyle = colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
   const themeTextStyle = colorScheme === 'light' ? styles.lightText : styles.darkText;
   const themeSafeAreaViewStyle = colorScheme === 'light' ? styles.lightSafeAreaView : styles.darkSafeAreaView;
-  const themeCardtyle = colorScheme === 'light' ? styles.lightCard : styles.darkCard;
+  const themeCardStyle = colorScheme === 'light' ? styles.lightCard : styles.darkCard;
 
   return (
     <SafeAreaView style={[styles.safeAreaView, themeSafeAreaViewStyle]}>
-      <View style={[styles.container, themeContainerStyle]}> 
+      <View style={[styles.container, themeContainerStyle]}>
         <View>
           <Text style={[styles.title, themeTitleStyle]}>Мої записи</Text>
         </View>
@@ -72,17 +65,20 @@ export default function HistoryScreen() {
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.date}
           renderItem={({ item }) => (
-            <View style={[styles.entryCard, themeCardtyle]}> 
+            <View style={[styles.entryCard, themeCardStyle]}>
               <Text style={[styles.date, themeTextStyle]}>{formatDate(item.date)}</Text>
               <Text style={[styles.feelings, themeTextStyle]}>Настрій: {item.feelings.join(', ') || '—'}</Text>
               <Text style={[styles.selfLove, themeTextStyle]}>Любов до себе: {item.selfLove || '—'}</Text>
               <Text style={[styles.selfCare, themeTextStyle]}>Самотурбота: {item.selfCare.join(', ') || '—'}</Text>
               <Text style={[styles.gratitude, themeTextStyle]}>Вдячність: {item.gratitude.filter(Boolean).join(', ') || '—'}</Text>
               <Text style={[styles.water, themeTextStyle]}>Вода: {item.waterIntake}/7</Text>
-              <TouchableOpacity style={styles.trashIcon} onPress={() => {
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-                handleDelete(item.date)
-              }}>
+              <TouchableOpacity
+                style={styles.trashIcon}
+                onPress={() => {
+                  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+                  handleDelete(item.date);
+                }}
+              >
                 <Ionicons name="trash" size={24} color="#fd5b5bff" />
               </TouchableOpacity>
             </View>
@@ -131,7 +127,7 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
   },
-  lightSafeAreaView : {
+  lightSafeAreaView: {
     backgroundColor: '#FAFAFA',
   },
   darkSafeAreaView: {

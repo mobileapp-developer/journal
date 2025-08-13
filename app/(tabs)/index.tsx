@@ -15,6 +15,8 @@ import SelfLoveSection from '@/components/SelfLoveSection';
 import WaterIntakeSection from '@/components/WaterIntakeSection';
 import { Color } from '@/constants/TWPalette';
 import { colorThemes, useTheme } from '@/lib/theme-context';
+import { JournalEntry } from '@/types';
+
 
 const FEELINGS_OPTIONS = [
     '😊 Щастя', '😌 Спокій', '😆 Радість', '😤 Роздратованість', '😰 Тривожність', '😴 Втома', '😢 Сум',
@@ -25,15 +27,6 @@ const SELF_CARE_OPTIONS = [
     'Сніданок', 'Обід', 'Вечеря', 'Свіже повітря', 'Прогулянка', 'Розмова з друзями',
     'Вітаміни', 'Зарядка', 'Читання', 'Спорт', 'Відпочити',
 ];
-
-export interface JournalEntry {
-    date: string;
-    feelings: string[];
-    selfLove: string;
-    selfCare: string[];
-    gratitude: [string, string, string];
-    waterIntake: number;
-}
 
 export default function JournalScreen() {
     const [selectedDate, setSelectedDate] = useState(new Date());

@@ -22,6 +22,7 @@ export default function RootLayout() {
             name="(tabs)"
             options={{
               headerShown: false,
+              headerLargeTitle: true,
               title: 'Головна',
             }}
           />
