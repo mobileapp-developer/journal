@@ -3,13 +3,12 @@
 скільки склянок води випито. Відображає статистику споживання води за тиждень у вигляді графіка.
 */
 
-import { View, Text, TouchableOpacity, StyleSheet, LayoutAnimation, Platform, UIManager, useColorScheme, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, LayoutAnimation, Platform, StyleSheet, Text, TouchableOpacity, UIManager, useColorScheme, View } from 'react-native';
 
 interface WaterIntakeSectionProps {
     waterIntake: number;
@@ -22,7 +21,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 
 export default function WaterIntakeSection({ waterIntake, updateWaterIntake }: WaterIntakeSectionProps) {
-    const [waterGoal, setWaterGoal] = useState(7);
+    const [waterGoal, setWaterGoal] = useState<number>(() => Math.max(7, waterIntake));
     const [expanded, setExpanded] = useState(false);
     const [weeklyData, setWeeklyData] = useState<number[]>([]);
     const [average, setAverage] = useState(0);
@@ -81,6 +80,12 @@ export default function WaterIntakeSection({ waterIntake, updateWaterIntake }: W
     };
 
     const colorScheme = useColorScheme();
+    
+    useEffect(() => {
+        if (waterIntake > waterGoal) {
+            setWaterGoal(Math.min(20, waterIntake));
+        }
+    }, [waterIntake]);
 
     const themeSectionStyle = colorScheme === 'light' ? styles.lightSection : styles.darkSection;
     const themeGoalValueStyle = colorScheme === 'light' ? styles.lightGoalValue : styles.darkGoalValue;

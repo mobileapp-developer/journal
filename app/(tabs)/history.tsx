@@ -71,7 +71,7 @@ export default function HistoryScreen() {
               <Text style={[styles.selfLove, themeTextStyle]}>Любов до себе: {item.selfLove || '—'}</Text>
               <Text style={[styles.selfCare, themeTextStyle]}>Самотурбота: {item.selfCare.join(', ') || '—'}</Text>
               <Text style={[styles.gratitude, themeTextStyle]}>Вдячність: {item.gratitude.filter(Boolean).join(', ') || '—'}</Text>
-              <Text style={[styles.water, themeTextStyle]}>Вода: {item.waterIntake}/7</Text>
+              <Text style={[styles.water, themeTextStyle]}>Вода: {item.waterIntake} склянок</Text>
               <TouchableOpacity
                 style={styles.trashIcon}
                 onPress={() => {

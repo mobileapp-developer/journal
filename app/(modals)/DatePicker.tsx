@@ -1,8 +1,7 @@
-import React from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, Platform, useColorScheme } from 'react-native';
-import { Animated } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
+import React, { useEffect, useState } from 'react';
+import { Animated, Modal, Platform, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 interface DatePickerProps {
     visible: boolean;
@@ -16,6 +15,13 @@ export default function DatePicker({ visible, value, onChange, onClose }: DatePi
     const colorScheme = useColorScheme();
     const sheetBackgroundColor = colorScheme === 'light' ? styles.lightSheet : styles.darkSheet;
     const themeLabelStyle = colorScheme === 'light' ? styles.lightLabel : styles.darkLabel;
+
+    const [tempDate, setTempDate] = useState<Date>(value);
+
+    useEffect(() => {
+        // reset tempDate whenever the picker opens or the external value changes
+        if (visible) setTempDate(value);
+    }, [visible, value]);
 
     if (Platform.OS === 'android') {
         if (!visible) {
@@ -49,15 +55,20 @@ export default function DatePicker({ visible, value, onChange, onClose }: DatePi
                         <View style={{ width: 70 }} />
                     </View>
                     <DateTimePicker
-                        value={value}
+                        value={tempDate}
                         mode='date'
                         display="spinner"
-                        onChange={onChange}
+                        onChange={(event: any, date?: Date) => {
+                            // update only local temp state for iOS modal
+                            if (date) setTempDate(date);
+                        }}
                         themeVariant={colorScheme === 'light' ? 'light' : 'dark'}
                         style={styles.picker}
                     />
                     <TouchableOpacity style={styles.button} onPress={() => {
                         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                        // commit the temporary selection to the parent then close
+                        onChange && onChange(null, tempDate);
                         onClose();
                     }}>
                         <Text style={styles.buttonText}>Продовжити</Text>

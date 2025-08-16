@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, Platform, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Alert, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import DatePicker from '../(modals)/DatePicker';
 import FeelingsSection from '@/components/FeelingsSection';
 import GratitudeSection from '@/components/GratitudeSection';
 import SelfCareSection from '@/components/SelfCareSection';
@@ -16,6 +15,7 @@ import WaterIntakeSection from '@/components/WaterIntakeSection';
 import { Color } from '@/constants/TWPalette';
 import { colorThemes, useTheme } from '@/lib/theme-context';
 import { JournalEntry } from '@/types';
+import DatePicker from '../(modals)/DatePicker';
 
 
 const FEELINGS_OPTIONS = [
@@ -104,7 +104,7 @@ export default function JournalScreen() {
     const updateWaterIntake = (glasses: number) => {
         setJournalEntry(prev => ({
             ...prev,
-            waterIntake: Math.max(0, Math.min(8, glasses))
+            waterIntake: Math.max(0, Math.min(20, glasses))
         }));
     };
 
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     title: {
-        fontSize: 28,
+        fontSize: 36,
         fontWeight: 'bold',
         color: '#333',
     },
